@@ -67,8 +67,20 @@ function render(){
  let r=ROWS.slice().sort((a,b)=>(a.etapa+a.nome).localeCompare(b.etapa+b.nome));
  const rows=r.map(x=>`<tr><td>${x.data||''}</td><td>${x.nome}</td><td>${x.turma||''}</td><td>Etapa ${x.etapa}</td><td>${x.score}/${x.total}</td><td>${x.pct}%</td></tr>`).join('');
  document.getElementById('out').innerHTML=`<div class="card"><h1>Notas individuais <span>(${r.length})</span></h1>
-  <button class="btn ghost" style="max-width:180px" onclick="csv()">Baixar CSV</button>
+  <div style="display:flex;gap:12px;flex-wrap:wrap">
+   <button class="btn ghost" style="max-width:180px;margin-top:0" onclick="csv()">Baixar CSV</button>
+   <button class="btn" style="max-width:260px;margin-top:0;background:var(--bad)" onclick="reset()">Resetar teste (apagar notas)</button>
+   <button class="btn ghost" style="max-width:120px;margin-top:0" onclick="load()">Atualizar</button>
+  </div>
   <table><tr><th>Data</th><th>Nome</th><th>Turma</th><th>Etapa</th><th>Nota</th><th>%</th></tr>${rows}</table></div>`;}
+function reset(){
+ if(!confirm('Isso vai APAGAR todas as notas registradas para reaplicar o teste. Deseja continuar?'))return;
+ if(!confirm('Tem certeza? Esta ação não pode ser desfeita.'))return;
+ const b=document.getElementById('backend').value.trim();const p=document.getElementById('pass').value;
+ document.getElementById('out').innerHTML='<div class="card"><p class="lead">Apagando…</p></div>';
+ jsonp(b+'?action=reset&pass='+encodeURIComponent(p),d=>{
+   if(d&&d.ok){alert('Notas apagadas com sucesso. O teste pode ser refeito com a turma.');ROWS=[];load();}
+   else{alert('Não foi possível resetar (verifique a senha e o backend).');load();}});}
 function csv(){let c='Data,Nome,Turma,Etapa,Acertos,Total,Percentual\n';
  ROWS.forEach(x=>c+=`"${x.data||''}","${x.nome}","${x.turma||''}",${x.etapa},${x.score},${x.total},${x.pct}\n`);
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/csv'}));a.download='notas_farmarcas.csv';a.click();}
