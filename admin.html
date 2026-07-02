@@ -14,8 +14,8 @@ main{flex:1;padding:22px 20px 30px}
 h1{font-size:22px;margin:.1em 0 .3em}h1 span{color:var(--org)}
 p.lead{color:var(--grey);font-size:14px;line-height:1.5}
 label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}
-input,select{width:100%;padding:13px 14px;border:1.5px solid #dcdce2;border-radius:11px;font-size:16px;outline:none}
-input:focus{border-color:var(--org)}
+input,select{width:100%;padding:13px 14px;border:1.5px solid #dcdce2;border-radius:11px;font-size:16px;outline:none;background:#fff}
+input:focus,select:focus{border-color:var(--org)}
 .btn{display:block;width:100%;border:0;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;background:var(--org);color:#fff}
 .btn:active{background:var(--org2)}.btn.ghost{background:#eee;color:var(--ink)}.btn.dark{background:var(--dark)}
 .prog{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--grey);margin-bottom:10px}
@@ -44,20 +44,21 @@ tr:hover td{background:#faf7f3}
 <div class="bar"></div><main>
 <div class="card" id="login">
  <h1>Acesso restrito</h1>
- <label>URL do backend</label><input id="backend" placeholder="https://script.google.com/macros/s/.../exec">
+ <label>URL do backend (Google Apps Script)</label><input id="backend" value="https://script.google.com/macros/s/AKfycbzAaTSMZkOIUcxcbELSKVkkbd3hPqjDp-baj-WK-w3qg4DuXAlbMzFwdMnxz4khPiSD1Q/exec">
+ <label>URL do quiz (frontend)</label><input id="frontend" value="https://joaovideo.github.io/quiz-resolume/quiz.html">
  <label>Senha do instrutor</label><input id="pass" type="password" placeholder="senha">
  <button class="btn" onclick="load()">Entrar</button>
+ <p class="msg" style="margin-top:10px">Este é o único lugar onde os endereços podem ser alterados, caso necessário. Já estão preenchidos.</p>
 </div>
 <div id="out"></div>
 </main><div class="foot"><span class="msg">Vídeo Engenharia · Farmarcas</span></div></div>
 <script>
-const LS=localStorage;document.getElementById('backend').value=LS.getItem('backend')||'';
 function jsonp(url,cb){const s=document.createElement('script');const n='__cb'+Math.random().toString(36).slice(2);
  window[n]=d=>{delete window[n];s.remove();cb(d)};s.onerror=()=>{delete window[n];s.remove();cb(null)};
  s.src=url+(url.includes('?')?'&':'?')+'callback='+n;document.body.appendChild(s);}
 let ROWS=[];
 function load(){const b=document.getElementById('backend').value.trim();const p=document.getElementById('pass').value;
- if(!b){alert('Cole a URL do backend.');return}LS.setItem('backend',b);
+ if(!b){alert('Cole a URL do backend.');return}
  document.getElementById('out').innerHTML='<div class="card"><p class="lead">Carregando…</p></div>';
  jsonp(b+'?action=admin&pass='+encodeURIComponent(p),d=>{
    if(!d){document.getElementById('out').innerHTML='<div class="card"><p class="lead">Falha ao conectar ao backend.</p></div>';return}
